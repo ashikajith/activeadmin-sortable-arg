@@ -7,7 +7,7 @@ module ActiveAdmin
     module ControllerActions
       def sortable
         member_action :sort, :method => :post do
-          if defined?(::Mongoid::Orderable) && 
+          if defined?(::Mongoid::Orderable) &&
             resource.class.included_modules.include?(::Mongoid::Orderable)
               resource.move_to! params[:position].to_i
           else
@@ -21,11 +21,11 @@ module ActiveAdmin
     module TableMethods
       HANDLE = '&#x2195;'.html_safe
 
-      def sortable_handle_column
+      def sortable_handle_column(arguments: {})
         column '', :class => "activeadmin-sortable" do |resource|
           sort_url, query_params = resource_path(resource).split '?', 2
           sort_url += "/sort"
-          sort_url += "?" + query_params if query_params
+          sort_url += "?" + query_params.merge(arguments) if query_params
           order_by, order_dir = params[:order].split '_', 2
           position = resource.send(order_by.to_sym)
           content_tag :span,
